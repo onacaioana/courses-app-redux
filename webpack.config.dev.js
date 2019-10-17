@@ -2,13 +2,15 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-processs.env.NODE_ENV = "development";
+process.env.NODE_ENV = "development";
 
 module.exports = {
-  mode: "development",
+  mode: "development", //webpack runs in dev mode
   target: "web",
-  devTool: "cheap-module-source-map", //let us see our original code when debugging in the browser
+  devtool: "cheap-module-source-map", //let us see our original code when debugging in the browser
   entry: "./src/index",
+
+  //webpack doesn't output code in development mode.It serve our app from memory
   output: {
     path: path.resolve(__dirname, "build"),
     publicPath: "/",
@@ -17,22 +19,24 @@ module.exports = {
   devServer: {
     stats: "minimal",
     overlay: true,
-    historyApiFallback: true, //all request will be sent to index.html
-    header: { "Access-Controll-Allow-Origin": "*" },
+    historyApiFallback: true,
+    disableHostCheck: true,
+    headers: { "Access-Control-Allow-Origin": "*" },
     https: false
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "src.index.html",
+      template: "src/index.html",
       favicon: "src/favicon.ico"
     })
   ],
   module: {
+    //what files to handle
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader"]
+        use: ["babel-loader", "eslint-loader"]
       },
       {
         test: /\.(css)$/,
